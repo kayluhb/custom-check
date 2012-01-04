@@ -1,0 +1,40 @@
+{
+    "name": "customCheck",
+    "version": "1.0.0",
+    "title": "jQuery.customCheck()",
+    "author": {
+        "name": "Caleb Brown",
+        "url": "https://bottleupandexplode.com"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "MIT-LICENSE.txt"
+        },
+        {
+            "type": "GPL",
+            "url": "GPL-LICENSE.txt"
+        }
+    ],
+    "dependencies": {
+        "jquery": "1"
+    },
+    "description": "The main purpose of this plugin is to create a custom radio button or checkbox",
+    "keywords": [
+        "radio",
+        "checkbox",
+        "custom",
+        "aria"
+    ],
+    "homepage": "https://github.com/kayluhb/custom-check",
+    "contributors": [
+        {
+            "name": "Caleb Brown",
+            "url": "https://github.com/kayluhb"
+        }
+    ],
+    "files": [
+        "jquery.custom-check.js",
+        "custom-check.css"
+    ]
+}

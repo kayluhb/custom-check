@@ -1,0 +1,5 @@
+
+span.custom-check { background:#ebedf0; border:1px solid #c3c5c8; display:inline-block; height:20px; width:20px; }
+span.custom-check.hover { background:#d1e6fa; border:1px solid #b1bfcd; }
+span.custom-check.checked { background:#d1e6fa; border:1px solid #b1bfcd; }
+
