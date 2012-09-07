@@ -1,4 +1,4 @@
-/* 
+/*
 
 Call the plugin with $('jquery-selector').customCheck({  });
 
@@ -8,17 +8,18 @@ Call the plugin with $('jquery-selector').customCheck({  });
     var CustomCheck = function(el, opts) {
         // Defaults are below
         var settings = $.extend({}, $.fn.customCheck.defaults, opts),
-        $el = $(el),
-        checked = 'checked',
-        klass = 'hover',
-        c = $el.is(':' + checked),
-        id = $el.attr('id'),
-        // Use text of label for title on span
-        l = $('label[for="' + id + '"]'),
-        // Unless the tab index is manually set, jQuery may not be able to 
-        // get it using the attr() method, so we'll check multiple places
-        // and then make sure its at least a number
-        ti = $el.attr('tabindex') || $el.get(0).tabIndex || 0;
+            o = this,
+            $el = $(el),
+            checked = 'checked',
+            klass = 'hover',
+            c = $el.is(':' + checked),
+            id = $el.attr('id'),
+            // Use text of label for title on span
+            l = $('label[for="' + id + '"]'),
+            // Unless the tab index is manually set, jQuery may not be able to
+            // get it using the attr() method, so we'll check multiple places
+            // and then make sure its at least a number
+            ti = $el.attr('tabindex') || $el.get(0).tabIndex || 0;
         
         // Set id on input if it doesn't have one
         if (!id || id.length < 1) {
@@ -35,7 +36,7 @@ Call the plugin with $('jquery-selector').customCheck({  });
             .click(function(e, triggered) {
                 // Avoid infinite loop & double checking
                 if (triggered === true) { return; }
-                onClick($el, cb, o, true);
+                onClick($el, cb, settings, true);
             })
             // Hide the original input box
             .hide();
@@ -76,7 +77,7 @@ Call the plugin with $('jquery-selector').customCheck({  });
             .get(0).tabIndex = ti;
         
         var onClick = function(el, cb, o, inputClick) {
-            // Determine if we need to check input box. i.e. if input is 
+            // Determine if we need to check input box. i.e. if input is
             // checked and span has 'checked' class, need to flip it
             var checked = 'checked';
             if (cb.hasClass(checked) === el.is(':' + checked) && !inputClick) {
@@ -90,18 +91,19 @@ Call the plugin with $('jquery-selector').customCheck({  });
             
             // Handle radio buttons
             if (el.is(':radio') && !inputClick) {
-              $('input[name="'+el.attr('name')+'"]').not(el).each(function() {
-                $('#cc_'+this.id)
-                    .removeClass(checked)
-                    .attr({'aria-checked': 'false' });
-              });
+                $('input[name="'+el.attr('name')+'"]').not(el).each(function() {
+                    $('#cc_'+this.id)
+                        .removeClass(checked)
+                        .attr({'aria-checked': 'false' });
+                });
             }
-            
-            // Timeout to allow for 'checking' to occur before callback
-            setTimeout(function() {  
-                o.onCheck.apply(el, [c]);
-            }, 25);
-        }
+            if (o) {
+                // Timeout to allow for 'checking' to occur before callback
+                setTimeout(function() {
+                    o.onCheck.apply(el, [c]);
+                }, 25);
+            }
+        };
     };
     $.fn.customCheck = function(options) {
         return this.each(function(idx, el) {
@@ -123,5 +125,3 @@ Call the plugin with $('jquery-selector').customCheck({  });
     // Default settings
     $.fn.customCheck.defaults = { onCheck:function(){  } };
 })(jQuery);
-
-
