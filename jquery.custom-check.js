@@ -104,6 +104,24 @@ Call the plugin with $('jquery-selector').customCheck({  });
                 }, 25);
             }
         };
+        this.check = function() {
+            var checked = 'checked';
+            if (!cb.hasClass(checked)) {
+                $el.attr(checked, checked);
+                cb
+                    .addClass(checked)
+                    .attr({ 'aria-checked': 'true' });
+            }
+        };
+        this.uncheck = function() {
+            var checked = 'checked';
+            if (cb.hasClass(checked)) {
+                $el.removeAttr(checked);
+                cb
+                    .removeClass(checked)
+                    .attr({ 'aria-checked': 'false' });
+            }
+        };
     };
     $.fn.customCheck = function(options) {
         return this.each(function(idx, el) {
