@@ -20,7 +20,6 @@ By default the DOM element's class attribute is applied to the checkbox.
 
     <input type="checkbox" class="custom-check" />
 
-
     <script>
         (function($){
             function init(){
