@@ -1,6 +1,16 @@
 /*
 
-Call the plugin with $('jquery-selector').customCheck({  });
+Call the plugin with
+
+$('jquery-selector').customCheck({ 
+    onCheck: function (checked) { },
+    cls: ''
+});
+
+onCheck - The local callback for the onCheck event.  Passes whether the checkbox is checked or not.
+cls - Additional CSS class
+
+By default the DOM element's class attribute is applied to the checkbox.
 
 */
 
@@ -25,9 +35,8 @@ Call the plugin with $('jquery-selector').customCheck({  });
         if (!id || id.length < 1) {
             id = $el.attr('id', 'check_input_' + $.fn.customCheck.uid++).attr('id');
         }
-
         // Create span node
-        var cb = $el.before('<span id="cc_' + id + '" title="' + l.text() + '" class="' + $el.attr('class') + ' ' + ((c) ? checked : '') + '" role="' + checked + '" aria-checked="' + ((c) ? 'true' : 'false') + '" aria-controls="' + id + '" />')
+        var cb = $el.before('<span id="cc_' + id + '" title="' + l.text() + '" class="' + $el.attr('class') + ' ' + settings.cls + ' ' + ((c) ? checked : '') + '" role="' + checked + '" aria-checked="' + ((c) ? 'true' : 'false') + '" aria-controls="' + id + '" />')
                 .parent()
                 .find('span#cc_' + id);
 
@@ -99,7 +108,7 @@ Call the plugin with $('jquery-selector').customCheck({  });
             }
             if (o) {
                 // Timeout to allow for 'checking' to occur before callback
-                setTimeout(function() {
+                setTimeout(function () {
                     o.onCheck.apply(el, [c]);
                 }, 25);
             }
@@ -141,5 +150,8 @@ Call the plugin with $('jquery-selector').customCheck({  });
     $.fn.customCheck.uid = 0;
     
     // Default settings
-    $.fn.customCheck.defaults = { onCheck:function(){  } };
+    $.fn.customCheck.defaults = {
+        onCheck: function () { },
+        cls: ''
+    };
 })(jQuery);
