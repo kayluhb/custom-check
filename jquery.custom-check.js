@@ -27,7 +27,7 @@ Call the plugin with $('jquery-selector').customCheck({  });
         }
 
         // Create span node
-        var cb = $el.before("<span id='cc_" + id + "' title='" + l.text() + "' class='custom-check" + ((c)?' ' + checked : '') + "' role='" + checked + "' aria-checked='" + ((c) ? 'true' : 'false')+"' aria-controls='" + id + "' />")
+        var cb = $el.before('<span id="cc_' + id + '" title="' + l.text() + '" class="' + $el.attr('class') + ' ' + ((c) ? checked : '') + '" role="' + checked + '" aria-checked="' + ((c) ? 'true' : 'false') + '" aria-controls="' + id + '" />')
                 .parent()
                 .find('span#cc_' + id);
 
