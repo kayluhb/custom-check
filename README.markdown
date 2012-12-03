@@ -3,10 +3,12 @@ A simple plugin for creating custom checkboxes.
 
 Call the plugin with
 
-$('.jquery-selector').customCheck({ 
-    onCheck: function (checked) { },
-    cls: ''
-});
+    $('.jquery-selector').customCheck({ 
+        onCheck: function (checked) { },
+        cls: ''
+    });
+
+Optional Parameters 
 
 onCheck - The local callback for the onCheck event.  Passes whether the checkbox is checked or not.
 cls - Additional CSS class
@@ -14,7 +16,7 @@ cls - Additional CSS class
 By default the DOM element's class attribute is applied to the checkbox.
 
 
-Example:
+## Example
 
     <input type="checkbox" class="custom-check" />
 
