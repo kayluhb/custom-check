@@ -2,7 +2,7 @@
 
 Call the plugin with
 
-$('jquery-selector').customCheck({ 
+$('jquery-selector').customCheck({
     onCheck: function (checked) { },
     cls: ''
 });
@@ -42,14 +42,14 @@ By default the DOM element's class attribute is applied to the checkbox.
 
         $el
             // Attach handlers to the original input node to redirect to ours
-            .click(function(e, triggered) {
-                // Avoid infinite loop & double checking
-                if (triggered === true) { return; }
+            .change(function(e) {
+                e.preventDefault();
+                //console.log('$el.click', e);
                 onClick($el, cb, settings, true);
             })
             // Hide the original input box
             .hide();
-
+        
         // IE doesn't fire click event on checkbox when label clicked
         l.click(function(e) {
             cb.click(); // does double duty in all but IE
@@ -65,6 +65,7 @@ By default the DOM element's class attribute is applied to the checkbox.
                 onClick($el, cb, settings, false);
             })
             .keypress(function(e) {
+                e.preventDefault();
                 var k = (e.which) ? e.which : ((e.keyCode) ? e.keyCode : 0);
                 // Trigger on space or enter keys
                 if (k == 13 || k == 32) {
@@ -86,22 +87,26 @@ By default the DOM element's class attribute is applied to the checkbox.
             .get(0).tabIndex = ti;
         
         var onClick = function(el, cb, o, inputClick) {
+            //console.log('on click');
             // Determine if we need to check input box. i.e. if input is
             // checked and span has 'checked' class, need to flip it
             var checked = 'checked';
+            //console.log('cb.hasClass(checked) === el.is(\':\' + checked)', cb.hasClass(checked) === el.is(':' + checked), '!inputClick', !inputClick);
             if (cb.hasClass(checked) === el.is(':' + checked) && !inputClick) {
+                //console.log(el);
                 el.trigger('click', [true]).change();
             }
             // Now change the span attributes to complete the ruse
             var c = el.is(':' + checked);
+            //console.log('c', c);
             cb
                 .toggleClass(checked)
-                .attr({ 'aria-checked': '' + ((c) ? 'true':'false') });
+                .attr({ 'aria-checked': '' + ((c) ? 'true' : 'false') });
             
             // Handle radio buttons
             if (el.is(':radio') && !inputClick) {
-                $('input[name="'+el.attr('name')+'"]').not(el).each(function() {
-                    $('#cc_'+this.id)
+                $('input[name="' + el.attr('name') + '"]').not(el).each(function() {
+                    $('#cc_' + this.id)
                         .removeClass(checked)
                         .attr({'aria-checked': 'false' });
                 });
