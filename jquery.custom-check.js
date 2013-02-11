@@ -83,7 +83,8 @@ By default the DOM element's class attribute is applied to the checkbox.
                     e.preventDefault();
                     onClick($el, $cb, base.options, false);
                 })
-                .keypress(function(e) {
+                .keypress(function (e) {
+                    e.preventDefault();
                     var k = (e.which) ? e.which : ((e.keyCode) ? e.keyCode : 0);
                     // Trigger on space or enter keys
                     if (k == 13 || k == 32) {
