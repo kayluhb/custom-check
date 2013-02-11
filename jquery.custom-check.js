@@ -14,99 +14,113 @@ By default the DOM element's class attribute is applied to the checkbox.
 
 */
 
-(function($) {
-    var CustomCheck = function(el, opts) {
-        // Defaults are below
-        var settings = $.extend({}, $.fn.customCheck.defaults, opts),
-            o = this,
+(function ($) {
+    $.customCheck = function (el, options) {
+        // To avoid scope issues, use 'base' instead of 'this'
+        // to reference this class from internal events and functions.
+        var base = this,
             $el = $(el),
-            checked = 'checked',
-            klass = 'hover',
-            c = $el.is(':' + checked),
-            id = $el.attr('id'),
-            // Use text of label for title on span
-            l = $('label[for="' + id + '"]'),
-            // Unless the tab index is manually set, jQuery may not be able to
-            // get it using the attr() method, so we'll check multiple places
-            // and then make sure its at least a number
-            ti = $el.attr('tabindex') || $el.get(0).tabIndex || 0;
-        
-        // Set id on input if it doesn't have one
-        if (!id || id.length < 1) {
-            id = $el.attr('id', 'check_input_' + $.fn.customCheck.uid++).attr('id');
-        }
-        // Create span node
-        var cb = $el.before('<span id="cc_' + id + '" title="' + l.text() + '" class="' + $el.attr('class') + ' ' + settings.cls + ' ' + ((c) ? checked : '') + '" role="' + checked + '" aria-checked="' + ((c) ? 'true' : 'false') + '" aria-controls="' + id + '" />')
-                .parent()
-                .find('span#cc_' + id);
+            $cb,
+            checked = 'checked';
 
-        $el
-            // Attach handlers to the original input node to redirect to ours
-            .change(function(e) {
-                e.preventDefault();
-                //console.log('$el.click', e);
-                onClick($el, cb, settings, true);
-            })
-            // Hide the original input box
-            .hide();
-        
-        // IE doesn't fire click event on checkbox when label clicked
-        l.click(function(e) {
-            cb.click(); // does double duty in all but IE
-            return false;
-        });
+        // Access to jQuery and DOM versions of element
+        base.$el = $el;
+        base.el = el;
 
-        cb
-            // Make span look 'clickable'
-            .css({ cursor: 'pointer' })
-            // Attach handlers to the span
-            .click(function(e) {
-                e.preventDefault();
-                onClick($el, cb, settings, false);
-            })
-            .keypress(function(e) {
-                e.preventDefault();
-                var k = (e.which) ? e.which : ((e.keyCode) ? e.keyCode : 0);
-                // Trigger on space or enter keys
-                if (k == 13 || k == 32) {
-                    $(this).click();
-                }
-            })
-            // Add class to span on hover
-            .hover(
-                function() {
-                    $(this).addClass(klass);
-                },
-                function() {
-                    $(this).removeClass(klass);
-                }
-            )
-            // Set the tabIndex to make span focusable and enable key controls
-            // we use DOM property versus jQuery because some older browsers
-            // won't let you set the tabindex using the manner jQuery does
-            .get(0).tabIndex = ti;
-        
-        var onClick = function(el, cb, o, inputClick) {
-            //console.log('on click');
+        // Add a reverse reference to the DOM object
+        base.$el.data("customCheck", base);
+
+        function init() {
+            
+            base.options = $.extend({}, $.customCheck.defaults, options);
+            
+            var c = $el.is(':' + checked),
+                id = $el.attr('id'),
+                hov = 'hover',
+                // Use text of label for title on span
+                $label,
+                // Unless the tab index is manually set, jQuery may not be able to
+                // get it using the attr() method, so we'll check multiple places
+                // and then make sure its at least a number
+                ti = $el.attr('tabindex') || $el.get(0).tabIndex || 0;
+
+            // Set id on input if it doesn't have one
+            if (!id || id.length < 1) {
+                id = $el.attr('id', 'check_input_' + $.customCheck.uid++).attr('id');
+            }
+            $label = $('label[for="' + id + '"]');
+            // Create span node
+            $cb = $el.before('<span id="cc_' + id + '" role="' + checked + '" aria-checked="' + ((c) ? 'true' : 'false') + '" aria-controls="' + id + '" />')
+                    .parent()
+                    .find('span#cc_' + id);
+
+            if ($label.length > 0) {
+                $cb.attr('title', $label.text());
+            }
+
+            $el
+                // Attach handlers to the original input node to redirect to ours
+                .click(function(e, triggered) {
+                    // Avoid infinite loop & double checking
+                    if (triggered === true) { return; }
+                    onClick($el, $cb, base.options, true);
+                })
+                // Hide the original input box
+                .hide();
+
+            // IE doesn't fire click event on checkbox when label clicked
+            $label.click(function(e) {
+                $cb.click(); // does double duty in all but IE
+                return false;
+            });
+
+            $cb
+                .addClass($el.attr('class') + ' ' + base.options.cls + ' ' + ((c) ? checked : ''))
+                // Make span look 'clickable'
+                .css({ cursor: 'pointer' })
+                // Attach handlers to the span
+                .click(function(e) {
+                    e.preventDefault();
+                    onClick($el, $cb, base.options, false);
+                })
+                .keypress(function(e) {
+                    var k = (e.which) ? e.which : ((e.keyCode) ? e.keyCode : 0);
+                    // Trigger on space or enter keys
+                    if (k == 13 || k == 32) {
+                        $(this).click();
+                    }
+                })
+                // Add class to span on hover
+                .hover(
+                    function() {
+                        $(this).addClass(hov);
+                    },
+                    function() {
+                        $(this).removeClass(hov);
+                    }
+                )
+                // Set the tabIndex to make span focusable and enable key controls
+                // we use DOM property versus jQuery because some older browsers
+                // won't let you set the tabindex using the manner jQuery does
+                .get(0).tabIndex = ti;
+        };
+
+        function onClick(el, cb, o, inputClick) {
             // Determine if we need to check input box. i.e. if input is
             // checked and span has 'checked' class, need to flip it
-            var checked = 'checked';
-            //console.log('cb.hasClass(checked) === el.is(\':\' + checked)', cb.hasClass(checked) === el.is(':' + checked), '!inputClick', !inputClick);
             if (cb.hasClass(checked) === el.is(':' + checked) && !inputClick) {
-                //console.log(el);
                 el.trigger('click', [true]).change();
             }
             // Now change the span attributes to complete the ruse
             var c = el.is(':' + checked);
-            //console.log('c', c);
             cb
                 .toggleClass(checked)
                 .attr({ 'aria-checked': '' + ((c) ? 'true' : 'false') });
             
             // Handle radio buttons
             if (el.is(':radio') && !inputClick) {
-                $('input[name="' + el.attr('name') + '"]').not(el).each(function() {
-                    $('#cc_' + this.id)
+                $('input[name="'+el.attr('name')+'"]').not(el).each(function() {
+                    $('#cc_'+this.id)
                         .removeClass(checked)
                         .attr({'aria-checked': 'false' });
                 });
@@ -117,46 +131,43 @@ By default the DOM element's class attribute is applied to the checkbox.
                     o.onCheck.apply(el, [c]);
                 }, 25);
             }
-        };
-        this.check = function() {
-            var checked = 'checked';
-            if (!cb.hasClass(checked)) {
+        }
+
+        base.check = function() {
+            if (!$cb.hasClass(checked)) {
                 $el.attr(checked, checked);
-                cb
+                $cb
                     .addClass(checked)
                     .attr({ 'aria-checked': 'true' });
             }
         };
-        this.uncheck = function() {
-            var checked = 'checked';
-            if (cb.hasClass(checked)) {
+
+        base.uncheck = function() {
+            if ($cb.hasClass(checked)) {
                 $el.removeAttr(checked);
-                cb
+                $cb
                     .removeClass(checked)
                     .attr({ 'aria-checked': 'false' });
             }
         };
-    };
-    $.fn.customCheck = function(options) {
-        return this.each(function(idx, el) {
-            var $el = $(this), key = 'customCheck';
-            // Return early if this element already has a plugin instance
-            if ($el.data(key)) { return; }
-            if ($el.is(':checkbox') || $el.is(':radio')) {
-                // Pass options to plugin constructor
-                var customCheck = new CustomCheck(this, options);
-                // Store plugin object in this element's data
-                $el.data(key, customCheck);
-            }
-        });
-    };
 
+        // Run initializer
+        init();
+    };
+    
     // Static properties
-    $.fn.customCheck.uid = 0;
+    $.customCheck.uid = 0;
     
     // Default settings
-    $.fn.customCheck.defaults = {
+    $.customCheck.defaults = {
         onCheck: function () { },
         cls: ''
     };
+
+    $.fn.customCheck = function (options) {
+        return this.each(function () {
+            (new $.customCheck(this, options));
+        });
+    };
+
 })(jQuery);
