@@ -35,6 +35,7 @@ By default the DOM element's class attribute is applied to the checkbox.
             base.options = $.extend({}, $.customCheck.defaults, options);
 
             var c = $el.is(':' + checked),
+                cls = $el.attr('class') === undefined ? 'custom-check' : $el.attr('class'),
                 id = $el.attr('id'),
                 hov = 'hover',
                 // Use text of label for title on span
@@ -75,7 +76,7 @@ By default the DOM element's class attribute is applied to the checkbox.
             });
 
             $cb
-                .addClass($el.attr('class') + ' ' + base.options.cls + ' ' + ((c) ? checked : ''))
+                .addClass(cls + ' ' + base.options.cls + ' ' + ((c) ? checked : ''))
                 // Make span look 'clickable'
                 .css({ cursor: 'pointer' })
                 // Attach handlers to the span
