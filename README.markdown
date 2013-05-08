@@ -27,6 +27,9 @@ By default the DOM element's class attribute is applied to the checkbox.
                     onCheck: onCheck,
                     cls: 'my-check'
                 });
+
+                $('.custom-check').data('customCheck').check();
+                $('.custom-check').data('customCheck').uncheck();
             }
             function onCheck(checked) {
                 console.log(checked);
