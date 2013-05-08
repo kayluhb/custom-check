@@ -31,9 +31,9 @@ By default the DOM element's class attribute is applied to the checkbox.
         base.$el.data("customCheck", base);
 
         function init() {
-            
+
             base.options = $.extend({}, $.customCheck.defaults, options);
-            
+
             var c = $el.is(':' + checked),
                 id = $el.attr('id'),
                 hov = 'hover',
@@ -104,7 +104,7 @@ By default the DOM element's class attribute is applied to the checkbox.
                 // we use DOM property versus jQuery because some older browsers
                 // won't let you set the tabindex using the manner jQuery does
                 .get(0).tabIndex = ti;
-        };
+        }
 
         function onClick(el, cb, o, inputClick) {
             // Determine if we need to check input box. i.e. if input is
@@ -117,7 +117,7 @@ By default the DOM element's class attribute is applied to the checkbox.
             cb
                 .toggleClass(checked)
                 .attr({ 'aria-checked': '' + ((c) ? 'true' : 'false') });
-            
+
             // Handle radio buttons
             if (el.is(':radio') && !inputClick) {
                 $('input[name="'+el.attr('name')+'"]').not(el).each(function() {
@@ -155,10 +155,10 @@ By default the DOM element's class attribute is applied to the checkbox.
         // Run initializer
         init();
     };
-    
+
     // Static properties
     $.customCheck.uid = 0;
-    
+
     // Default settings
     $.customCheck.defaults = {
         onCheck: function () { },
